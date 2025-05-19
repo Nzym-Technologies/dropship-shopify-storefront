@@ -1,0 +1,127 @@
+{% comment %}
+  Custom Image Display Snippet
+  Features:
+  - Configurable image source
+  - Alt text for accessibility
+  - Lazy loading for performance
+  - Optional caption
+  - Responsive sizing
+  - Custom class options
+  - Image ratio control
+  - Optional linking
+{% endcomment %}
+
+{% liquid
+  assign image_src = image_src | default: settings.default_image
+  assign alt_text = alt_text | default: 'Descriptive image text'
+  assign lazy_load = lazy_load | default: true
+  assign show_caption = show_caption | default: false
+  assign caption_text = caption_text | default: ''
+  assign image_width = image_width | default: 'auto'
+  assign image_height = image_height | default: 'auto'
+  assign custom_class = custom_class | default: ''
+  assign aspect_ratio = aspect_ratio | default: '1/1'
+  assign enable_link = enable_link | default: false
+  assign link_url = link_url | default: '#'
+  assign link_target = link_target | default: '_self'
+%}
+
+<div
+  class="custom-image-container {% if custom_class != blank %}{{ custom_class }}{% endif %}"
+  style="--aspect-ratio: {{ aspect_ratio }};"
+>
+  {% if enable_link %}
+    <a
+      href="{{ link_url }}"
+      target="{{ link_target }}"
+      rel="{% if link_target == '_blank' %}noopener noreferrer{% endif %}"
+    >
+  {% endif %}
+
+  <img
+    src="{{ image_src }}"
+    alt="{{ alt_text }}"
+    {% if lazy_load %}
+      loading="lazy"
+    {% endif %}
+    width="{{ image_width }}"
+    height="{{ image_height }}"
+    class="custom-image"
+  >
+
+  {% if enable_link %}
+    </a>
+  {% endif %}
+
+  {% if show_caption and caption_text != blank %}
+    <div class="custom-image-caption">
+      {{ caption_text }}
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .custom-image-container {
+    display: block;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: var(--aspect-ratio, 1/1);
+  }
+
+  .custom-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .custom-image-caption {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .custom-image-container {
+      aspect-ratio: var(--aspect-ratio-mobile, var(--aspect-ratio, 1/1));
+    }
+
+    .custom-image-caption {
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+  }
+</style>
+
+{% comment %}
+  How to use this snippet:
+
+  1. Save this as 'custom-image.liquid' in your snippets folder
+
+  2. Include it in any template with:
+
+  {% render 'custom-image',
+    image_src: 'https://example.com/your-image.jpg',
+    alt_text: 'Description of your image',
+    lazy_load: true,
+    show_caption: true,
+    caption_text: 'Your image caption here',
+    image_width: '800',
+    image_height: '600',
+    custom_class: 'my-special-image',
+    aspect_ratio: '16/9',
+    enable_link: true,
+    link_url: '/collections/all',
+    link_target: '_blank'
+  %}
+
+  3. All parameters are optional and have default values
+{% endcomment %}

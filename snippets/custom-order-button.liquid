@@ -1,0 +1,331 @@
+{% comment %}
+  Order Now Modal Snippet
+  - Displays a button with heartbeat animation showing product price
+  - Opens modal with customer details form
+  - Includes validation for Indian mobile number
+  - Mobile-first responsive design
+  - Uses Shopify theme's default font and color scheme
+{% endcomment %}
+
+<style>
+  /* Modal Styles */
+  .custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-family: var(--font-body-family);
+    color: var(--color-base-text);
+  }
+
+  .modal-content {
+    background-color: var(--color-background);
+    margin: 15% auto;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+  }
+
+  @keyframes modalFadeIn {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  /* Button Styles */
+  .order-now-btn {
+    display: inline-block;
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+    border: none;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+    margin: 1rem 0;
+  }
+
+  .order-now-btn:hover {
+    background-color: var(--color-button-hover);
+    transform: translateY(-2px);
+  }
+
+  .secondary-btn {
+    background-color: var(--color-base-background-1);
+    color: var(--color-base-text);
+    border: 1px solid var(--color-border);
+  }
+
+  .secondary-btn:hover {
+    background-color: var(--color-background-2);
+  }
+
+  /* Heartbeat Animation */
+  @keyframes heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.1); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    70% { transform: scale(1); }
+  }
+
+  .heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+    animation-delay: 3s;
+  }
+
+  /* Form Styles */
+  .customer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group label {
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+  }
+
+  .form-group input {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-family: var(--font-body-family);
+    font-size: 0.9rem;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--color-button);
+    box-shadow: 0 0 0 1px var(--color-button);
+  }
+
+  .error-message {
+    color: #d20000;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: none;
+  }
+
+  .buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  /* Close button */
+  .close-modal {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--color-base-text-opacity-60);
+  }
+
+  .close-modal:hover {
+    color: var(--color-base-text);
+  }
+
+  /* Mobile First - Media Queries */
+  @media screen and (min-width: 768px) {
+    .buttons-container {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .order-now-btn {
+      width: 48%;
+    }
+  }
+</style>
+
+{% assign formatted_price = product.price | divided_by: 100.00 | money %}
+
+<button class="order-now-btn heartbeat" id="openModalBtn">
+  Order now @ {{ formatted_price }} with free shipping and cash on delivery
+</button>
+
+<div id="customerModal" class="custom-modal">
+  <div class="modal-content">
+    <span class="close-modal" id="closeModalBtn">&times;</span>
+    <h2>Complete Your Order</h2>
+    <p>Please provide your details to process your order</p>
+
+    <form id="customerDetailsForm" class="customer-form">
+      <div class="form-group">
+        <label for="name">Full Name*</label>
+        <input type="text" id="name" name="name" required>
+        <span class="error-message" id="nameError">Please enter your full name</span>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Delivery Address*</label>
+        <input type="text" id="address" name="address" required>
+        <span class="error-message" id="addressError">Please enter your delivery address</span>
+      </div>
+
+      <div class="form-group">
+        <label for="pincode">Pincode*</label>
+        <input type="text" id="pincode" name="pincode" maxlength="6" required>
+        <span class="error-message" id="pincodeError">Please enter a valid 6-digit pincode</span>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Contact Number*</label>
+        <input type="tel" id="phone" name="phone" maxlength="10" required>
+        <span class="error-message" id="phoneError">Please enter a valid 10-digit Indian mobile number</span>
+      </div>
+
+      <div class="buttons-container">
+        <button type="submit" class="order-now-btn" id="submitOrderBtn">
+          Order now @ {{ formatted_price }} with free shipping and cash on delivery
+        </button>
+
+        <button type="button" class="order-now-btn secondary-btn" id="payNowBtn">
+          Pay now and get Free Shipping and additional discount of Rs 50
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modal = document.getElementById('customerModal');
+    const form = document.getElementById('customerDetailsForm');
+    const payNowBtn = document.getElementById('payNowBtn');
+
+    // Form fields and error messages
+    const nameInput = document.getElementById('name');
+    const addressInput = document.getElementById('address');
+    const pincodeInput = document.getElementById('pincode');
+    const phoneInput = document.getElementById('phone');
+
+    const nameError = document.getElementById('nameError');
+    const addressError = document.getElementById('addressError');
+    const pincodeError = document.getElementById('pincodeError');
+    const phoneError = document.getElementById('phoneError');
+
+    // Open modal
+    openModalBtn.addEventListener('click', function() {
+      modal.style.display = 'block';
+    });
+
+    // Close modal
+    closeModalBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Close if clicked outside modal
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Input validation
+    pincodeInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    phoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Form submission
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Reset errors
+      resetErrors();
+
+      // Validate inputs
+      let isValid = true;
+
+      // Name validation
+      if (!nameInput.value.trim()) {
+        showError(nameInput, nameError);
+        isValid = false;
+      }
+
+      // Address validation
+      if (!addressInput.value.trim()) {
+        showError(addressInput, addressError);
+        isValid = false;
+      }
+
+      // Pincode validation
+      if (!/^\d{6}$/.test(pincodeInput.value)) {
+        showError(pincodeInput, pincodeError);
+        isValid = false;
+      }
+
+      // Phone validation - Indian mobile (10 digits starting with 6, 7, 8, or 9)
+      if (!/^[6-9]\d{9}$/.test(phoneInput.value)) {
+        showError(phoneInput, phoneError);
+        isValid = false;
+      }
+
+      // If form is valid, submit the order
+      if (isValid) {
+        // Here you would typically submit the form data to your backend
+        // For demonstration, we'll just display an alert
+        alert('Order submitted successfully!');
+        modal.style.display = 'none';
+      }
+    });
+
+    // Pay now button
+    payNowBtn.addEventListener('click', function() {
+      // Validate form first
+      form.dispatchEvent(new Event('submit'));
+
+      // If form is valid, redirect to payment page
+      // This would be handled by the form submit handler in a real implementation
+    });
+
+    // Helper functions
+    function showError(input, errorElement) {
+      input.style.borderColor = '#d20000';
+      errorElement.style.display = 'block';
+    }
+
+    function resetErrors() {
+      const inputs = [nameInput, addressInput, pincodeInput, phoneInput];
+      const errors = [nameError, addressError, pincodeError, phoneError];
+
+      inputs.forEach(input => {
+        input.style.borderColor = '';
+      });
+
+      errors.forEach(error => {
+        error.style.display = 'none';
+      });
+    }
+  });
+</script>

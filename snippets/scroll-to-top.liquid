@@ -1,0 +1,96 @@
+{% comment %}
+  Scroll to Top Button Snippet
+  - Features smooth scrolling animation
+  - Uses color #eee453 as requested
+  - Appears after scrolling down
+  - Responsive design
+{% endcomment %}
+
+<style>
+  .scroll-top-button {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: #eee453;
+    color: #333;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .scroll-top-button:hover {
+    background-color: #ddd340;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .scroll-top-button svg {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .scroll-top-button {
+      padding: 12px;
+      bottom: 15px;
+      right: 15px;
+    }
+
+    .scroll-top-button svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+</style>
+
+<button id="scrollTopBtn" class="scroll-top-button" aria-label="Scroll to top">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var scrollButton = document.getElementById('scrollTopBtn');
+
+    // Show/hide button based on scroll position
+    window.onscroll = function() {
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollButton.style.display = "block";
+      } else {
+        scrollButton.style.display = "none";
+      }
+    };
+
+    // Smooth scroll to top when clicked
+    scrollButton.addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  });
+</script>
+
+{% comment %}
+  To use this snippet:
+  1. Add it to your theme's snippets directory as 'scroll-to-top.liquid'
+  2. Include it in your theme by adding {% render 'scroll-to-top' %} to your theme.liquid file
+     just before the closing </body> tag
+{% endcomment %}
