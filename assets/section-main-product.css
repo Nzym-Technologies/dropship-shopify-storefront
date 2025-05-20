@@ -250,7 +250,7 @@ a.product__text {
   margin-bottom: 1.5rem;
 }
 
-.product__title > h1 {
+.product__title h1{
   font-size: medium !important;
 }
 
